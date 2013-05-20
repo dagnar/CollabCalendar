@@ -1,3 +1,5 @@
+require "digest"
+
 class User
 	include Mongoid::Document
 	include BCrypt
@@ -7,7 +9,7 @@ class User
 	field :email, 								required: true, type: String
 	field :role,									type: String, default: 'user'
 	field :password_hash, 				type: String
-	field :token, 								type: String
+	field :token_hash,						type: String
 	field :create_at, 						type: DateTime
 
 	validates_presence_of :first_name, :last_name, :email
@@ -21,13 +23,18 @@ class User
 
 	index({ email: 1 }, { unique: true, name: "email_index"})
 
-	def self.authenticate(email, password)
-		user = User.where(email)
+	def self.authenticate_password(email, password)
+		user = User.where(email: email).first
 		if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
 			user
 		else
 			nil
 		end
+	end
+
+	def self.authenticate_token(email, token)
+		user = User.where(email: email).first
+		if user && user.token_hash = Digest::SHA1.hexdigest(token)
 	end
 
   def password_changed?
@@ -39,7 +46,7 @@ class User
   end
 
 	def saved_password
-    @saved_password ||= BCrypt::Password.new(encrypted_password)
+    @saved_password ||= BCrypt::Password.new(password_hash)
   end
   
   def saved_password=(new_password)
@@ -49,6 +56,16 @@ class User
   
   def encrypt_password
     saved_password = password if password.present?
+  end
+
+  def generate_token
+  	begin
+  		pre_hash_token = SecureRandom.hex
+  		self.update_attribute!(token_hash: Digest::SHA1.hexdigest(pre_hash_token))
+  		pre_hash_token
+  	rescue 
+  		return nil
+  	end
   end
 
 end

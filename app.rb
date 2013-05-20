@@ -44,7 +44,7 @@ end
 	  # "cookie value: #{session["value"]}"
 	end
 
-	post '/' do
+	post '/user/new' do
 		# if User.where(email: params[:post][:email]).exists?
 		# 	binding.pry
 		# 	erb :fail
@@ -56,19 +56,11 @@ end
 				:password => params[:post][:password]
 			)
 		  @name = "#{params[:post][:first_name]} #{params[:post][:last_name]}"
+		  
 		  @title = "Hello #{@name}"
 		  erb :hello
 		# end
 	end
-
-	post "/user" do
-
-	end
-
-	# get '/booya' do
-	# 	content_type :json
-	# 	{ balls: 'yaya', crap: 'wewe'}.to_json
-	# end
 
 	get '/users.json' do
 		content_type :json
