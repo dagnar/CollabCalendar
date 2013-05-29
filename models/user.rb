@@ -46,7 +46,7 @@ class User
 
   def password_present?
     if self.password.nil?
-      false
+      return false
     end
     true
   end
@@ -74,7 +74,7 @@ class User
   		self.update_attribute(:token_hash, Digest::SHA1.hexdigest(pre_hash_token))
   		self.save!
   		pre_hash_token
-  	rescue 
+  	rescue Exception => e
   		return nil
   	end
   end

@@ -30,10 +30,27 @@ end
 
 	enable :sessions
 
-
 	# set utf-8 for outgoing
 	before do
 	  headers "Content-Type" => "text/html; charset=utf-8"
+	end
+
+	helpers do
+		def logged_in?
+			token = request.cookies['userID']
+			email = request.cookies['email']
+			user = User.authenticate_token(email, token)
+
+			if user
+				true
+			else
+				false
+			end
+		end
+
+		def protected!
+			halt [ 401, 'Not Authorized' ] unless logged_in?
+		end
 	end
 
 	get '/user/new' do
@@ -61,8 +78,8 @@ end
 			token = the_user.generate_token
 			#setting the cookie securely
 			# response.set_cookie(@name, {value: token, secure: true)
-			response.set_cookie(@name, token)
-		  
+			response.set_cookie('userID', value: token, path: '/')
+		  response.set_cookie('email', value: params[:post][:email], path: '/')
 		  
 		  @title = "Hello #{@name}"
 		  erb :hello
@@ -77,10 +94,11 @@ end
 	post '/user/login' do
 		user = User.authenticate_password(params[:post][:email], params[:post][:password])
 		if user
-			'junk'
 			@name = "#{params[:post][:first_name]} #{params[:post][:last_name]}"
 			token = user.generate_token
-			response.set_cookie(@name, token)
+			response.set_cookie('userID', value: token, path: '/')
+			response.set_cookie('email', value: params[:post][:email], path: '/')
+			session[:email] = params[:post][:email]
 			content_type :json
 			return user.to_json(:except => [:_id, :role, :created_at, :password_hash, :token_hash])
 		else
@@ -90,7 +108,12 @@ end
 			# erb :hello
 	end
 
+	get '/user/logout' do
+		response.set_cookie
+	end
+
 	get '/users.json' do
+		protected!
 		content_type :json
 		all_users = User.all
 		all_users.to_json
