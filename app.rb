@@ -26,9 +26,9 @@ end
 
  # class HoaForce < Sinatra::Application
 # 	register Sinatra::ConfigFile
-# 	use Rack::Session::Cookie
+ 	use Rack::Session::Cookie, expire_after: 2*7*24*60*60, secret: 'luis_is_a_full_blown_moron'
 
-	enable :sessions
+	# enable :sessions
 
 	# set utf-8 for outgoing
 	before do
@@ -37,8 +37,8 @@ end
 
 	helpers do
 		def logged_in?
-			token = request.cookies['userID']
-			email = request.cookies['email']
+			token = session[:userID]
+			email = session[:email]
 			user = User.authenticate_token(email, token)
 
 			if user
@@ -78,8 +78,8 @@ end
 			token = the_user.generate_token
 			#setting the cookie securely
 			# response.set_cookie(@name, {value: token, secure: true)
-			response.set_cookie('userID', value: token, path: '/')
-		  response.set_cookie('email', value: params[:post][:email], path: '/')
+			session[:userID] = token
+		  session[:email] = params[:post][:email]
 		  
 		  @title = "Hello #{@name}"
 		  erb :hello
@@ -96,8 +96,7 @@ end
 		if user
 			@name = "#{params[:post][:first_name]} #{params[:post][:last_name]}"
 			token = user.generate_token
-			response.set_cookie('userID', value: token, path: '/')
-			response.set_cookie('email', value: params[:post][:email], path: '/')
+			session[:userID] = token
 			session[:email] = params[:post][:email]
 			content_type :json
 			return user.to_json(:except => [:_id, :role, :created_at, :password_hash, :token_hash])
@@ -109,7 +108,11 @@ end
 	end
 
 	get '/user/logout' do
-		response.set_cookie
+		session.clear
+		# response.delete_cookie "userID"
+		# response.delete_cookie "email"
+		# response.set_cookie('userID', value: nil, path: '/')
+		# response.set_cookie('email', value: nil, path: '/')		
 	end
 
 	get '/users.json' do
