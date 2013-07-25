@@ -1,0 +1,45 @@
+<script>
+	$(document).ready(function(){
+		var valArr = new Array();
+
+		$("#button").click(function() {
+			valArr[0] = $("#ddl").val();
+			valArr[1] = $("#nameEvent").val();
+			valArr[2] = $("#startDate").val();
+			valArr[3] = $("#startTime").val();
+			valArr[4] = $("#endTime").val();
+		
+
+			$.post("",
+						{
+							crId: valArr[0],
+							name: valArr[1],
+							startDate: valArr[2],
+							startTime: valArr[3],
+							endTime: valArr[4]
+						},
+						function(data, status){
+							 alert("Data: " + data + "\nStatus: " + status);
+						}
+				);
+		});		
+	});
+
+</script>
+<form>
+	<p>
+		Community Resource
+		<select id='ddl'>
+			<% @all_com_resources.each do |bla| %>
+			<option value="<%= bla.id %>"> <%= bla.name %></option>
+			<!-- 	<input type="checkbox" name="resource" value="<%= bla.id %>"> <%= bla.name %> <	br> 	-->
+			<% end %>
+		</select>
+	</p>
+	<p>Name of Event: <input type="text" id="nameEvent"/></p>
+	<p>Date: dd-mm-yyyy <input type="text" id="startDate" /></p>
+	<p>Start Time: hh:mm<input type="text" id="startTime" /></p>
+	<p>End Time: hh:mm<input type="text" id="endTime" /></p>
+	<br><br>
+	<input id="button" type="submit" value="Booya">
+</form>

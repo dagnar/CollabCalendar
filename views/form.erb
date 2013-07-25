@@ -1,7 +1,33 @@
+<script>
+	$(document).ready(function(){
+		var valArr = new Array();
+
+		$("#button").click(function() {
+			valArr[0] = $("#first_name").val();
+			valArr[1] = $("#last_name").val();
+			valArr[2] = $("#email").val();
+			valArr[3] = $("#password`").val();
+
+			$.post("",
+						{
+							crId: valArr[0],
+							name: valArr[1],
+							startDate: valArr[2],
+							startTime: valArr[3],
+							endTime: valArr[4]
+						},
+						function(data, status){
+							 alert("Data: " + data + "\nStatus: " + status);
+						}
+				);
+		});		
+	});
+</script>
+
 <form action="/user/new" method="post">
-  <p>First name: <input type="text" name="post[first_name]" size="20"/></p>
-  <p>Last name: <input type="text" name="post[last_name]" size="20"/></p>
-	<p>Email: <input type="text" name="post[email]" size="20"/></p>  
-	<p>Password: <input type="text" name="post[password]" size="20"/></p> 
-  <input type="submit" value="Say hi!">
+  <p>First name: <input type="text" name="first_name" size="20"/></p>
+  <p>Last name: <input type="text" name="last_name" size="20"/></p>
+	<p>Email: <input type="text" name="email" size="20"/></p>  
+	<p>Password: <input type="text" name="password" size="20"/></p> 
+  <input id='button' type="submit" value="Say hi!">
 </form>
