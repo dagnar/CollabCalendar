@@ -64,7 +64,7 @@ end
 
 	get '/user/new' do
 	  @title = "Hello"
-	  erb :form
+	  erb :user
 
 	  # session["value"] ||= "hello fuckers"
 	  # response.set_cookie("ball", "s")
@@ -76,6 +76,7 @@ end
 		# 	binding.pry
 		# 	erb :fail
 		# else
+		binding.pry
 			the_user = User.create!(
 				:first_name => params[:first_name],
 				:last_name => params[:last_name],
@@ -163,7 +164,7 @@ end
 	post '/common-resource/book' do
 		protected!
 		
-		
+		binding.pry
 		the_resources = ComResource.where(_id: params[:crId])
 		the_resource = the_resources.first
 		if the_resource
@@ -174,12 +175,13 @@ end
 			starter = Time.new(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.min)
 			ender = Time.new(start_date.year, start_date.month, start_date.day, end_time.hour, end_time.min) 
 	
-			the_resource.add_schedule({name: params[:name], start_time: starter, end_time: ender})
-			binding.pry
-			the_resource.save
+			success = the_resource.add_schedule({name: params[:name], start_time: starter, end_time: ender})
+			if success
+				the_resource.save
+			end
 		end
 
-		status 200
+		erb :hello
 	end
 
 	get '/com_resources.json' do

@@ -6,15 +6,14 @@
 			valArr[0] = $("#first_name").val();
 			valArr[1] = $("#last_name").val();
 			valArr[2] = $("#email").val();
-			valArr[3] = $("#password`").val();
+			valArr[3] = $("#password").val();
 
 			$.post("",
 						{
-							crId: valArr[0],
-							name: valArr[1],
-							startDate: valArr[2],
-							startTime: valArr[3],
-							endTime: valArr[4]
+							first_name: valArr[0],
+							last_name: valArr[1],
+							email: valArr[2],
+							password: valArr[3]							
 						},
 						function(data, status){
 							 alert("Data: " + data + "\nStatus: " + status);

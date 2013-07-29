@@ -8,7 +8,6 @@
 			valArr[2] = $("#startDate").val();
 			valArr[3] = $("#startTime").val();
 			valArr[4] = $("#endTime").val();
-		
 
 			$.post("",
 						{
@@ -16,7 +15,7 @@
 							name: valArr[1],
 							startDate: valArr[2],
 							startTime: valArr[3],
-							endTime: valArr[4]
+							endTime: valArr[4]	
 						},
 						function(data, status){
 							 alert("Data: " + data + "\nStatus: " + status);
@@ -24,9 +23,9 @@
 				);
 		});		
 	});
-
 </script>
-<form>
+
+<form action="/common-resource/book">
 	<p>
 		Community Resource
 		<select id='ddl'>
@@ -40,6 +39,5 @@
 	<p>Date: dd-mm-yyyy <input type="text" id="startDate" /></p>
 	<p>Start Time: hh:mm<input type="text" id="startTime" /></p>
 	<p>End Time: hh:mm<input type="text" id="endTime" /></p>
-	<br><br>
 	<input id="button" type="submit" value="Booya">
 </form>

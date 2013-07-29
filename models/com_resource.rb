@@ -4,32 +4,24 @@ class ComResource
 
 	# attr_accessor :name, :description, :bookable, :location
 
-	field :name, 						type: String, required: true
-	field :bookable, 				type: Boolean, default: true
+	field :name, 				type: String, required: true
+	field :bookable, 			type: Boolean, default: true
 	field :description, 		type: String
-	field :location, 				type: String
+	field :location, 			type: String
 	field :time_limit,			type: Integer	#in minutes
-	field :schedules, 			default: Array.new
+	field :schedules, 			type: Array, default: []
 
 
 	validates_presence_of :name
 	validates_inclusion_of :bookable, in:[true, false]
-	validates_uniqueness_of :name, :message => "Already in use"
+	validates_uniqueness_of :name, :message => "Already in use"	
 
-# 	def add_schedule(sc)
-# 		schedules.each do |s|
-# 			if s.occurs_between?(sc.start_time, sc.end_time)
-# 				return 		#scheduling conflict
-# 			end
-# 		end
-# binding.pry
-# 		if (sc.duration / 60) <= time_limit 
-# 			schedules << sc
-# 		end
-# 	end
+	#after_initialize :dehash_schedules
+	before_save :hash_schedules
 
 	def add_schedule(options)
 		binding.pry
+		dehash_schedules
 		if options[:name] and options[:start_time] and options[:end_time]
 			sc = Schedule.new(options[:start_time], {end_time: options[:end_time], hoa_attributes: {name: options[:name]}})
 		elsif options[:name] and options[:schedule]
@@ -37,18 +29,36 @@ class ComResource
 		end
 
 		if sc
-			schedules.each do |s|
+			@ice_schedules.each do |s|
 				if s.occurs_between?(sc.start_time, sc.end_time)
-					return 		#scheduling conflict
+					return false		#schedu			if (sc.duration / 60) <= time_limit 						
+				end												
+			end
+			@ice_schedules << sc
+		end
+
+		return true
+	end
+
+	#de-hash schedules to instance variable
+	def dehash_schedules
+		#is this first time dehashing schedules?
+		if @ice_schedules.nil?
+			@ice_schedules = Array.new
+			if !self.schedules.nil?	
+				self.schedules.each do |s|					
+					@ice_schedules << Schedule.from_hash(s)
 				end
 			end
-	binding.pry
-			if time_limit
-				if (sc.duration / 60) <= time_limit 
-					schedules << sc				
-				end
-			else
-				schedules << sc
+		end
+	end
+
+	def hash_schedules
+		#clear out schedules
+		self.schedules = []
+		if !@ice_schedules.nil? and @ice_schedules.length > 0
+			@ice_schedules.each do |sc|
+				self.schedules << sc.to_hash
 			end
 		end
 	end
@@ -73,5 +83,9 @@ class ComResource
 		datas
 	end
 
+
+
 end
+
+
 
