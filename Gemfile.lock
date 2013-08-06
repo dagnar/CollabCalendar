@@ -1,5 +1,6 @@
-PATH
-  remote: ~/src/ice_cube
+GIT
+  remote: git@github.com:dagnar/ice_cube.git
+  revision: 07717d58cdf076c9b50672c541188c777d902c7b
   specs:
     ice_cube (0.10.1)
 

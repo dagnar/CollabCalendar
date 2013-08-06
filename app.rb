@@ -29,9 +29,10 @@ Mongoid.configure do |config|
   end
 end
 
- # class HoaForce < Sinatra::Application
+# todo: break this api out into seperate files by concerns	
+# class HoaForce < Sinatra::Application
 # 	register Sinatra::ConfigFile
- 	use Rack::Session::Cookie, expire_after: 2*7*24*60*60, secret: 'luis_is_a_full_blown_moron'
+ 	use Rack::Session::Cookie, expire_after: 2*7*24*60*60, secret: 'all_work_no_play_makes_us_a_dull_boy'
 
 	# enable :sessions
 
@@ -59,16 +60,13 @@ end
 	end
 
 	get '/' do
-		'<p>Helro bastards</p>'
+		'<p>Helro peoples</p>'
 	end
 
 	get '/user/new' do
 	  @title = "Hello"
 	  erb :user
 
-	  # session["value"] ||= "hello fuckers"
-	  # response.set_cookie("ball", "s")
-	  # "cookie value: #{session["value"]}"
 	end
 
 	post '/user/new' do
@@ -164,7 +162,6 @@ end
 	post '/common-resource/book' do
 		protected!
 		
-		binding.pry
 		the_resources = ComResource.where(_id: params[:crId])
 		the_resource = the_resources.first
 		if the_resource

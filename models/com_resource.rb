@@ -20,7 +20,6 @@ class ComResource
 	before_save :hash_schedules
 
 	def add_schedule(options)
-		binding.pry
 		dehash_schedules
 		if options[:name] and options[:start_time] and options[:end_time]
 			sc = Schedule.new(options[:start_time], {end_time: options[:end_time], hoa_attributes: {name: options[:name]}})
