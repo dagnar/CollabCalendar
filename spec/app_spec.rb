@@ -22,7 +22,7 @@ describe "Sinatra App" do
   it "should respond to GET" do
     get '/'
     last_response.should be_ok
-    last_response.body.should match(/Helro bastards/)
+    last_response.body.should match(/Helro peoples/)
   end
 
 end
