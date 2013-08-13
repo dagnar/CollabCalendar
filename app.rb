@@ -47,15 +47,20 @@ end
 			email = session[:email]
 			user = User.authenticate_token(email, token)
 
-			if user
-				true
+			if user				
+				user.id.to_s
 			else
 				false
 			end
 		end
 
 		def protected!
-			halt [ 401, 'Not Authorized' ] unless logged_in?
+			ret_val = logged_in?
+			if ret_val
+				ret_val
+			else
+				halt [ 401, 'Not Authorized' ]
+			end
 		end
 	end
 

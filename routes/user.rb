@@ -1,3 +1,4 @@
+###Gets
 get '/user/new' do
   @title = "Hello"
   erb :user
@@ -7,6 +8,19 @@ get '/user/login' do
 	@title = "hello"
 	erb :login
 end
+
+get '/user/logout' do
+	erb :logout
+end
+
+get '/user/all.json' do
+	protected!
+	content_type :json
+	all_users = User.all
+	all_users.to_json
+end
+
+###Posts
 
 post '/user/new' do
 	# if User.where(email: params[:post][:email]).exists?
@@ -49,10 +63,6 @@ post '/user/login' do
 		# erb :hello
 end
 
-get '/user/logout' do
-	erb :logout
-end
-
 post '/user/logout' do
 	session.clear
 	redirect '/'
@@ -62,9 +72,3 @@ post '/user/logout' do
 	# response.set_cookie('email', value: nil, path: '/')		
 end
 
-get '/users.json' do
-	protected!
-	content_type :json
-	all_users = User.all
-	all_users.to_json
-end

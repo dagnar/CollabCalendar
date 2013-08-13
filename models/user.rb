@@ -9,9 +9,9 @@ class User
 
 	field :first_name, 						type: String
 	field :last_name, 						type: String
-	field :email, 								required: true, type: String
-	field :role,									type: String, default: 'user'
-	field :password_hash, 				type: String
+	field :email, 							required: true, type: String
+	field :role,							type: String, default: 'user'
+	field :password_hash, 					type: String
 	field :token_hash,						type: String
 	field :created_at, 						type: DateTime
 
